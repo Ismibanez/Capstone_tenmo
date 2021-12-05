@@ -88,4 +88,16 @@ public class JdbcUserDao implements UserDao {
         user.setAuthorities("USER");
         return user;
     }
+
+    private BigDecimal getAccountBalance(int userID){
+        String sql = "Select balance from accounts " +
+                "where user_id = ?";
+        BigDecimal results = jdbcTemplate.queryForObject(sql, BigDecimal.class,userID);
+        if (results != null){
+            return results;
+        }else{
+            return new BigDecimal("-1.0");
+        }
+    }
+
 }
