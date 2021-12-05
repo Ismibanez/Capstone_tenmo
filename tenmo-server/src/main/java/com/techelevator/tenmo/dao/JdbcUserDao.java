@@ -89,7 +89,7 @@ public class JdbcUserDao implements UserDao {
         return user;
     }
 
-    private BigDecimal getAccountBalance(int userID){
+    public BigDecimal getAccountBalance(int userID){
         String sql = "Select balance from accounts " +
                 "where user_id = ?";
         BigDecimal results = jdbcTemplate.queryForObject(sql, BigDecimal.class,userID);

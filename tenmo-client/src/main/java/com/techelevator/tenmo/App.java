@@ -5,6 +5,8 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
 import com.techelevator.view.ConsoleService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
 
 public class App {
 
@@ -26,6 +28,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private ConsoleService console;
     private AuthenticationService authenticationService;
 
+	private RestTemplate restTemplate;
+
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
     	app.run();
@@ -34,6 +38,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     public App(ConsoleService console, AuthenticationService authenticationService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		this.restTemplate = new RestTemplate();
 	}
 
 	public void run() {
@@ -69,7 +74,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		
+		try {
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setBearerAuth(authToken);
+
+			locations = restTemplate.getForObject(API_BASE_URL, Location[].class);
+		} catch (RestClientResponseException | ResourceAccessException e) {
+			BasicLogger.log(e.getMessage());
+		}
+		double balance = restTemplate.getForObject(API_BASE_URL + "/balance", Double.class);
+
+		System.out.println("Your current balance is: TE " + balance);
 	}
 
 	private void viewTransferHistory() {
