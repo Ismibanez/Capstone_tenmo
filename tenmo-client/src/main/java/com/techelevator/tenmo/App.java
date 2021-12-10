@@ -1,11 +1,16 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TenmoService;
 import com.techelevator.view.ConsoleService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 public class App {
@@ -27,8 +32,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+	private TenmoService tenmoService;
 
-	private RestTemplate restTemplate;
+
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -38,7 +44,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     public App(ConsoleService console, AuthenticationService authenticationService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
-		this.restTemplate = new RestTemplate();
+		this.tenmoService = new TenmoService();
+//		this.restTemplate = new RestTemplate();
 	}
 
 	public void run() {
@@ -74,18 +81,9 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-		try {
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.setBearerAuth(authToken);
 
-			locations = restTemplate.getForObject(API_BASE_URL, Location[].class);
-		} catch (RestClientResponseException | ResourceAccessException e) {
-			BasicLogger.log(e.getMessage());
-		}
-		double balance = restTemplate.getForObject(API_BASE_URL + "/balance", Double.class);
-
-		System.out.println("Your current balance is: TE " + balance);
+		System.out.println("Your current balance is: TE " + tenmoService.getBalance());
 	}
 
 	private void viewTransferHistory() {
@@ -100,7 +98,20 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+
+		var users = tenmoService.listUsers();
+				// create a user service //
+		for (User user: users) {
+			System.out.println(user.getId() +  " : " + user.getUsername());
+		}
+
+		try {
+			long receiverID = Long.parseLong(console.getUserInput("Enter the Receiver's User ID: "));
+			// need send money to receiver //
+		}catch ( NumberFormatException e){
+			System.err.println("input provided was not an ID number");
+		}
+
 	}
 
 	private void requestBucks() {
@@ -155,6 +166,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 			UserCredentials credentials = collectUserCredentials();
 		    try {
 				currentUser = authenticationService.login(credentials);
+				tenmoService.setUser(currentUser);
 			} catch (AuthenticationServiceException e) {
 				System.out.println("LOGIN ERROR: "+e.getMessage());
 				System.out.println("Please attempt to login again.");
@@ -167,4 +179,10 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		String password = console.getUserInput("Password");
 		return new UserCredentials(username, password);
 	}
+	private HttpEntity<Object> makeHttpEntityWithToken() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(currentUser.getToken());
+		return new HttpEntity<>(headers);
+	}
+
 }

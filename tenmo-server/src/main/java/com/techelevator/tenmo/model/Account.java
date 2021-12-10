@@ -13,6 +13,10 @@ public class Account {
         this.balance = balance;
     }
 
+    public void receive(Account sender, double amount){
+        sender
+    }
+
     public Long getId() {
         return id;
     }

@@ -10,14 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
-public class UserAccountController {
+@RequestMapping(value = "/account", method =  RequestMethod.GET)
+public class AccountController {
+    // create two separate controllers
+    private final UserDao userDao;
+    private final AccountDao accountDao;
 
-    UserDao userDao;
-    AccountDao accountDao;
-    public UserAccountController(UserDao userDao, AccountDao accountDao) {
+    public AccountController(UserDao userDao, AccountDao accountDao) {
         this.accountDao = accountDao;
         this.userDao = userDao;
     }
@@ -28,6 +31,9 @@ public class UserAccountController {
         User user = userDao.findByUsername(name);
         return accountDao.findByUserID(user.getId()).getBalance();
     }
+
+
+//find account
 
 
 

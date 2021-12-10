@@ -24,7 +24,7 @@ public class JdbcAccountDao implements AccountDao{
     @Override
     public List<Account> findAll() {
         List<Account> accounts = new ArrayList<>();
-        String sql = "Select account_id, user_id, balance From account";
+        String sql = "Select account_id, user_id, balance From accounts";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql);
 
         while (result.next()){
@@ -37,7 +37,7 @@ public class JdbcAccountDao implements AccountDao{
     @Override
     public Account findByUserID(Long userID) {
         Account account = new Account();
-        String sql = "Select account_id, user_id, balance From account" +
+        String sql = "Select account_id, user_id, balance From accounts " +
                 "Where user_id = ?";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql,userID);
         if(result.next()){
