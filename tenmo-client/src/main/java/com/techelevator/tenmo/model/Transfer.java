@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Transfer {
     Long id;
-    Type typeId;
+    Long typeId;
     Status statusId;
     Long accountFrom;
     Long accountTo;
@@ -31,11 +31,12 @@ public class Transfer {
         Type(int value) {
             this.value = value;
         }
+
         public String getType() {
             return this.name();
         }
 
-        public int getValue() {
+        public int getValue(Type type) {
             return value;
         }
     }
@@ -43,21 +44,19 @@ public class Transfer {
 
     public Transfer(){}
     public Transfer(long typeId, long accountFrom, long accountTo, double amount) {
-        this.typeId = Type.values()[(int)typeId];
+        this.typeId = typeId;
         this.statusId = Status.Pending;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;
     }
     public Transfer(Type type, long accountFrom, long accountTo, Double amount) {
-        this.typeId = type;
+        this.typeId = (long)type.getValue(type);
         this.statusId = Status.Pending;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;
     }
-
-
     public Long getId() {
         return id;
     }
@@ -67,10 +66,10 @@ public class Transfer {
     }
 
     public Long getTypeId() {
-        return (long)typeId.getValue();
+        return typeId;
     }
 
-    public void setTypeId(Type typeId) {
+    public void setTypeId(Long typeId) {
         this.typeId = typeId;
     }
 
@@ -105,3 +104,4 @@ public class Transfer {
         this.amount = amount;
     }
 }
+

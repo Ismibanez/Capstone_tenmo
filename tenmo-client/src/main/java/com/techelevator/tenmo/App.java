@@ -106,10 +106,17 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		}
 
 		try {
-			long receiverID = Long.parseLong(console.getUserInput("Enter the Receiver's User ID: "));
+			String input = console.getUserInput("Enter the Receiver's User ID");
+			System.out.println(input);
+			long receiverID = Integer.parseInt(input);
 			// need send money to receiver //
+			double amount = Double.parseDouble( console.getUserInput("Enter the amount: "));
+
+			tenmoService.createTransferRequest(receiverID,amount);
+
 		}catch ( NumberFormatException e){
-			System.err.println("input provided was not an ID number");
+			System.err.println(e.getMessage());
+			//System.err.println("input provided was not an ID number");
 		}
 
 	}

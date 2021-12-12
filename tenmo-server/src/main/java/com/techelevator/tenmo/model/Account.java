@@ -14,7 +14,7 @@ public class Account {
     }
 
     public void receive(Account sender, double amount){
-        sender
+        //sender
     }
 
     public Long getId() {
