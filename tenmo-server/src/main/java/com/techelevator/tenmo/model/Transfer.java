@@ -3,19 +3,21 @@ package com.techelevator.tenmo.model;
 import java.io.Serializable;
 
 public class Transfer {
-    Long id;
+    long id;
     Type typeId;
     Status statusId;
-    Long accountFrom;
-    Long accountTo;
-    Double amount;
+    long userIdFrom;
+    long userIdTo;
+    long accountFrom;
+    long accountTo;
+    double amount;
 
     public enum Status{
         Pending(1), Approved(2), Rejected(3);
 
-        private final int value;
+        int value;
 
-        Status(int value) {
+        Status(int value){
             this.value = value;
         }
 
@@ -26,13 +28,10 @@ public class Transfer {
     public enum Type implements Serializable {
         Send(2), Request(1);
 
-        private final int value;
+        int value;
 
-        Type(int value) {
+        Type(int value){
             this.value = value;
-        }
-        public String getType() {
-            return this.name();
         }
 
         public int getValue() {
@@ -40,8 +39,9 @@ public class Transfer {
         }
     }
 
-
-    public Transfer(){}
+    public Transfer(){
+        this.statusId = Status.Pending;
+    }
     public Transfer(long typeId, long accountFrom, long accountTo, double amount) {
         this.typeId = Type.values()[(int)typeId];
         this.statusId = Status.Pending;
@@ -57,48 +57,63 @@ public class Transfer {
         this.amount = amount;
     }
 
+    public long getUserIdFrom() {
+        return userIdFrom;
+    }
 
-    public Long getId() {
-        return id;
+    public void setUserIdFrom(long userIdFrom) {
+        this.userIdFrom = userIdFrom;
+    }
+
+    public long getUserIdTo() {
+        return userIdTo;
+    }
+
+    public void setUserIdTo(long userIdTo) {
+        this.userIdTo = userIdTo;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getTypeId() {
-        return (long)typeId.getValue();
+    public Type getTypeId() {
+        return this.typeId;
     }
 
     public void setTypeId(Type typeId) {
         this.typeId = typeId;
     }
 
-    public Long getStatusId() {
-        return (long)statusId.getValue();
+    public Status getStatusId() {
+        return this.statusId;
     }
     public void setStatusId(Status status) {
         this.statusId = status;
     }
 
-    public Long getAccountFrom() {
-        return accountFrom;
+    public long getAccountFrom() {
+        return this.accountFrom;
     }
 
     public void setAccountFrom(Long accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public Long getAccountTo() {
-        return accountTo;
+    public long getAccountTo() {
+        return this.accountTo;
     }
 
     public void setAccountTo(Long accountTo) {
         this.accountTo = accountTo;
     }
 
-    public Double getAmount() {
-        return amount;
+    public double getAmount() {
+        return this.amount;
     }
 
     public void setAmount(Double amount) {

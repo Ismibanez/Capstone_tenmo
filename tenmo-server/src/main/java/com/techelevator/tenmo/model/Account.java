@@ -13,8 +13,8 @@ public class Account {
         this.balance = balance;
     }
 
-    public void receive(Account sender, double amount){
-        //sender
+    public void receive(double amount){
+        this.balance +=  amount;
     }
 
     public Long getId() {
@@ -39,5 +39,16 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public boolean sendBalance(Account receiver, double amount) {
+        if(amount <= 0){return false;}
+        if(receiver == null){return false;}
+        if(this.getBalance() >= amount){
+            this.balance -= amount;
+            receiver.receive(amount);
+            return true;
+        }
+        return false;
     }
 }

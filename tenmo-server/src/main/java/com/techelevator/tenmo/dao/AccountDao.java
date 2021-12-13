@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface AccountDao {
     List<Account> findAll();
-
     Account findByUserID(Long userID);
+    boolean transaction(Account account1,Account account2);
 }

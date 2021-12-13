@@ -8,6 +8,5 @@ public interface TransferDAO {
     Transfer createRequest(Transfer transfer);
     Transfer[] getRequestByUser(User user);
     Transfer[] getSentByUser(User user);
-
-
+    Transfer getTransfer(long id);
 }

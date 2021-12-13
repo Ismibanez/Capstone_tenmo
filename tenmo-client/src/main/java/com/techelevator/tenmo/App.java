@@ -1,6 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
@@ -22,12 +23,13 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	private static final String LOGIN_MENU_OPTION_LOGIN = "Login";
 	private static final String[] LOGIN_MENU_OPTIONS = { LOGIN_MENU_OPTION_REGISTER, LOGIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
 	private static final String MAIN_MENU_OPTION_VIEW_BALANCE = "View your current balance";
+	private static final String MAIN_MENU_OPTION_LOOK_UP_TRANSFER = "View a Transfer";
 	private static final String MAIN_MENU_OPTION_SEND_BUCKS = "Send TE bucks";
 	private static final String MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS = "View your past transfers";
 	private static final String MAIN_MENU_OPTION_REQUEST_BUCKS = "Request TE bucks";
 	private static final String MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS = "View your pending requests";
 	private static final String MAIN_MENU_OPTION_LOGIN = "Login as different user";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
+	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_VIEW_BALANCE, MAIN_MENU_OPTION_SEND_BUCKS, MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS, MAIN_MENU_OPTION_REQUEST_BUCKS, MAIN_MENU_OPTION_VIEW_PENDING_REQUESTS, MAIN_MENU_OPTION_LOOK_UP_TRANSFER, MAIN_MENU_OPTION_LOGIN, MENU_OPTION_EXIT };
 	
     private AuthenticatedUser currentUser;
     private ConsoleService console;
@@ -70,25 +72,49 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 				sendBucks();
 			} else if(MAIN_MENU_OPTION_REQUEST_BUCKS.equals(choice)) {
 				requestBucks();
+			} else if(MAIN_MENU_OPTION_LOOK_UP_TRANSFER.equals(choice)) {
+				lookUpTransfer();
 			} else if(MAIN_MENU_OPTION_LOGIN.equals(choice)) {
 				login();
 			} else {
 				// the only other option on the main menu is to exit
 				exitProgram();
 			}
+
+			//System.out.print("\033[H\033[2J");
+			//System.out.flush();
 		}
 	}
 
+	private void lookUpTransfer() {
+		// Display transfer List
+		long transferId = Long.parseLong(console.getUserInput("enter transfer Id"));
+		Transfer result = tenmoService.lookUpTransfer(transferId);
+
+		String type = Transfer.Type.values()[result.getTypeId().ordinal()].toString();
+
+		String status = Transfer.Status.values()[result.getStatusId().ordinal()].toString();
+
+		System.out.println("----------------");
+		System.out.println("ID: "+result.getId());
+		System.out.println("Transfer Type: " +type );
+		System.out.println("Transfer Status: " +status);
+		System.out.println("Account From: "+ result.getAccountFrom());
+		System.out.println("Account To: "+ result.getAccountTo());
+		System.out.println("Amount: "+ result.getAmount());
+		System.out.println("----------------");
+	}
+
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-
-
 		System.out.println("Your current balance is: TE " + tenmoService.getBalance());
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
+		Transfer[] transferArray = tenmoService.getTransferHistory();
+		for(Transfer transfer:transferArray){
+			String transferType = transfer.getTypeId() == Transfer.Type.Send ? "-" : "+";
+			System.out.println(transfer.getId() + ": "+ transferType + transfer.getAmount());
+		}
 	}
 
 	private void viewPendingRequests() {
@@ -97,20 +123,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
 
 		var users = tenmoService.listUsers();
 				// create a user service //
+
+
+
 		for (User user: users) {
 			System.out.println(user.getId() +  " : " + user.getUsername());
 		}
 
 		try {
 			String input = console.getUserInput("Enter the Receiver's User ID");
-			System.out.println(input);
 			long receiverID = Integer.parseInt(input);
 			// need send money to receiver //
-			double amount = Double.parseDouble( console.getUserInput("Enter the amount: "));
+			double amount = Double.parseDouble( console.getUserInput("Enter the amount"));
 
 			tenmoService.createTransferRequest(receiverID,amount);
 

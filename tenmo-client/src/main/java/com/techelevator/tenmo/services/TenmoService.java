@@ -44,7 +44,6 @@ public class TenmoService {
     public User[] listUsers(){
         ResponseEntity<User[]> response = restTemplate.exchange(API_BASE_URL + "/users", HttpMethod.GET,
             makeHttpEntityWithToken(), User[].class);
-        System.out.println(response);
         return response.getBody();
     }
 
@@ -53,12 +52,30 @@ public class TenmoService {
     }
 
     public void createTransferRequest(long receiverID, double amount) {
+        //restTemplate.getForObject(API_BASE_URL + "account")
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(user.getToken());
+        Transfer t = new Transfer();
 
+        t.setTypeId(Transfer.Type.Send);
+        t.setUserIdFrom((long)user.getUser().getId());
+        t.setUserIdTo(receiverID);
+        t.setAmount(amount);
 
-        HttpEntity<Transfer> entity = new HttpEntity<>(new Transfer(Transfer.Type.Send,user.getUser().getId(),receiverID,amount),headers);
+        HttpEntity<Transfer> entity = new HttpEntity<>(t,headers);
 
-        restTemplate.postForObject(API_BASE_URL + "account/transfer",entity, Transfer.class);
+        restTemplate.postForObject(API_BASE_URL + "/account/transfer",entity, Transfer.class);
+    }
+
+    public Transfer[] getTransferHistory() {
+        ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "/account/history", HttpMethod.GET,
+                makeHttpEntityWithToken(), Transfer[].class);
+        return response.getBody();
+    }
+    public Transfer lookUpTransfer(long transferId){
+        return restTemplate.exchange(API_BASE_URL + "/account/transfer/" + transferId, HttpMethod.GET,
+                makeHttpEntityWithToken(), Transfer.class).getBody();
     }
 }

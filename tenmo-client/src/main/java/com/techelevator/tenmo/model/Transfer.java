@@ -3,19 +3,40 @@ package com.techelevator.tenmo.model;
 import java.io.Serializable;
 
 public class Transfer {
-    Long id;
-    Long typeId;
+    long id;
+    Type typeId;
+
+    public long getAccountFrom() {
+        return accountFrom;
+    }
+
+    public void setAccountFrom(long accountFrom) {
+        this.accountFrom = accountFrom;
+    }
+
+    public long getAccountTo() {
+        return accountTo;
+    }
+
+    public void setAccountTo(long accountTo) {
+        this.accountTo = accountTo;
+    }
+
     Status statusId;
-    Long accountFrom;
-    Long accountTo;
+    long accountFrom;
+    long accountTo;
+    long userIdFrom;
+    long userIdTo;
     Double amount;
+
+    public Transfer(){}
 
     public enum Status{
         Pending(1), Approved(2), Rejected(3);
 
-        private final int value;
+        int value;
 
-        Status(int value) {
+        Status(int value){
             this.value = value;
         }
 
@@ -26,36 +47,23 @@ public class Transfer {
     public enum Type implements Serializable {
         Send(2), Request(1);
 
-        private final int value;
+        int value;
 
-        Type(int value) {
+        Type(int value){
             this.value = value;
         }
 
-        public String getType() {
-            return this.name();
-        }
-
-        public int getValue(Type type) {
+        public int getValue() {
             return value;
         }
     }
 
-
-    public Transfer(){}
-    public Transfer(long typeId, long accountFrom, long accountTo, double amount) {
-        this.typeId = typeId;
-        this.statusId = Status.Pending;
-        this.accountFrom = accountFrom;
-        this.accountTo = accountTo;
-        this.amount = amount;
+    public Status getStatusId() {
+        return statusId;
     }
-    public Transfer(Type type, long accountFrom, long accountTo, Double amount) {
-        this.typeId = (long)type.getValue(type);
-        this.statusId = Status.Pending;
-        this.accountFrom = accountFrom;
-        this.accountTo = accountTo;
-        this.amount = amount;
+
+    public void setStatusId(Status statusId) {
+        this.statusId = statusId;
     }
     public Long getId() {
         return id;
@@ -65,35 +73,28 @@ public class Transfer {
         this.id = id;
     }
 
-    public Long getTypeId() {
+    public Type getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Long typeId) {
+    public void setTypeId(Type typeId) {
         this.typeId = typeId;
     }
 
-    public Long getStatusId() {
-        return (long)statusId.getValue();
-    }
-    public void setStatusId(Status status) {
-        this.statusId = status;
+    public Long getUserIdFrom() {
+        return userIdFrom;
     }
 
-    public Long getAccountFrom() {
-        return accountFrom;
+    public void setUserIdFrom(Long userIdFrom) {
+        this.userIdFrom = userIdFrom;
     }
 
-    public void setAccountFrom(Long accountFrom) {
-        this.accountFrom = accountFrom;
+    public Long getUserIdTo() {
+        return userIdTo;
     }
 
-    public Long getAccountTo() {
-        return accountTo;
-    }
-
-    public void setAccountTo(Long accountTo) {
-        this.accountTo = accountTo;
+    public void setUserIdTo(Long userIdTo) {
+        this.userIdTo = userIdTo;
     }
 
     public Double getAmount() {
