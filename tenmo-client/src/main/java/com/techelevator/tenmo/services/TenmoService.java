@@ -74,7 +74,7 @@ public class TenmoService {
         return response.getBody();
     }
     public Transfer lookUpTransfer(long transferId){
-        ResponseEntity<Transfer> result = restTemplate.exchange(API_BASE_URL + "/transfer" + transferId, HttpMethod.GET,
+        ResponseEntity<Transfer> result = restTemplate.exchange(API_BASE_URL + "/transfer/" + transferId, HttpMethod.GET,
                 makeHttpEntityWithToken(), Transfer.class);
         if(result == null){
             return null;
