@@ -22,7 +22,6 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(value = "/account")
 public class AccountController {
-    // create two separate controllers
     private final UserDao userDao;
     private final AccountDao accountDao;
     private final TransferDAO transferDAO;
@@ -40,29 +39,7 @@ public class AccountController {
         return accountDao.findByUserID(user.getId()).getBalance();
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @RequestMapping(value = "/transfer", method =  RequestMethod.POST)
-    public Transfer requestTransfer(@Valid @RequestBody Transfer transfer){
-        Account sender = accountDao.findByUserID(transfer.getUserIdFrom());
-        Account receiver = accountDao.findByUserID(transfer.getUserIdTo());
 
-
-        if(Transfer.Type.values()[transfer.getTypeId().ordinal()] == Transfer.Type.Send) {
-            if (sender.sendBalance(receiver,transfer.getAmount())) {
-                accountDao.transaction(sender, receiver);
-                transfer.setStatusId(Transfer.Status.Approved);
-            }else{
-                transfer.setStatusId(Transfer.Status.Rejected);
-            }
-        }else {
-            transfer.setStatusId(Transfer.Status.Pending);
-
-        }
-
-        transfer.setAccountFrom(sender.getId());
-        transfer.setAccountTo(receiver.getId());
-        return transferDAO.createRequest(transfer);
-    }
 
     @RequestMapping(value = "/history", method =  RequestMethod.GET)
     public Transfer[] getAllTransfersByUser(Principal principal){
@@ -71,8 +48,5 @@ public class AccountController {
         list.addAll(Arrays.asList(transferDAO.getSentByUser(user)));
         return list.toArray(new Transfer[0]);
     }
-    @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
-    public Transfer getTransferById(@PathVariable int id){
-        return transferDAO.getTransfer(id);
-    }
+
 }
