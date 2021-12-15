@@ -63,10 +63,11 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 
 	private void mainMenu() {
 		while(true) {
-			String choice = (String)console.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 			System.out.println("*********************");
 			System.out.println("****  Main Menu  ****");
 			System.out.println("*********************");
+			String choice = (String)console.getChoiceFromOptions(MAIN_MENU_OPTIONS);
+
 			if(MAIN_MENU_OPTION_VIEW_BALANCE.equals(choice)) {
 				viewCurrentBalance();
 			} else if(MAIN_MENU_OPTION_VIEW_PAST_TRANSFERS.equals(choice)) {

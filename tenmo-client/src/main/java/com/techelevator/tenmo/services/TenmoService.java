@@ -69,7 +69,7 @@ public class TenmoService {
     }
 
     public Transfer[] getTransferHistory() {
-        ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "/history", HttpMethod.GET,
+        ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "/transfer/history", HttpMethod.GET,
                 makeHttpEntityWithToken(), Transfer[].class);
         return response.getBody();
     }

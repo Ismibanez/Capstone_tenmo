@@ -41,12 +41,6 @@ public class AccountController {
 
 
 
-    @RequestMapping(value = "/history", method =  RequestMethod.GET)
-    public Transfer[] getAllTransfersByUser(Principal principal){
-        User user = userDao.findByUsername(principal.getName());
-        List<Transfer> list = new ArrayList<Transfer>(Arrays.asList(transferDAO.getRequestByUser(user)));
-        list.addAll(Arrays.asList(transferDAO.getSentByUser(user)));
-        return list.toArray(new Transfer[0]);
-    }
+
 
 }
